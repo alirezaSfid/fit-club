@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Alireza &amp; Ana — Week Plan</title>
+<style>
+:root{
+  --bg:#FBF8F3; --card:#FFFFFF; --ink:#22262A; --muted:#7A8087;
+  --line:#ECE6DC;
+  --a:#0E6E6B;      /* Alireza — deep teal */
+  --a-soft:#E1F0EF;
+  --ana:#B0355B;    /* Ana — pomegranate */
+  --ana-soft:#F8E7ED;
+  --gym:#C77800; --gym-soft:#FBEFD9;
+  --free:#3E7C3A; --free-soft:#E7F1E5;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.45;
+  padding-bottom:calc(74px + env(safe-area-inset-bottom));
+}
+header{
+  padding:calc(14px + env(safe-area-inset-top)) 16px 10px;
+  background:var(--bg); position:sticky; top:0; z-index:20;
+  border-bottom:1px solid var(--line);
+}
+header h1{font-size:1.05rem; font-weight:800; letter-spacing:-.01em}
+header .sub{font-size:.72rem; color:var(--muted); margin-top:2px}
+.legend{display:flex; gap:10px; margin-top:8px; font-size:.7rem; font-weight:700}
+.legend span{display:flex; align-items:center; gap:5px; color:var(--muted)}
+.dotA,.dotN{width:9px;height:9px;border-radius:50%}
+.dotA{background:var(--a)} .dotN{background:var(--ana)}
+
+/* day chips */
+.days{display:flex; gap:6px; overflow-x:auto; padding:10px 16px 12px; scrollbar-width:none; background:var(--bg); position:sticky; top:calc(58px + env(safe-area-inset-top)); z-index:19; border-bottom:1px solid var(--line)}
+.days::-webkit-scrollbar{display:none}
+.day-chip{
+  flex:0 0 auto; border:1px solid var(--line); background:var(--card);
+  border-radius:999px; padding:7px 13px; font-size:.8rem; font-weight:700; color:var(--ink);
+}
+.day-chip .g{display:block; font-size:.58rem; font-weight:700; color:var(--gym); letter-spacing:.04em}
+.day-chip .r{display:block; font-size:.58rem; font-weight:600; color:var(--muted); letter-spacing:.04em}
+.day-chip.active{background:var(--ink); color:#fff; border-color:var(--ink)}
+.day-chip.active .g{color:#F2B25C}
+.day-chip.active .r{color:#B8BDC2}
+.day-chip.today:not(.active){border-color:var(--ink)}
+
+main{padding:14px 16px 8px; max-width:520px; margin:0 auto}
+.view{display:none}
+.view.on{display:block}
+
+/* day header */
+.dayhead{display:flex; align-items:baseline; justify-content:space-between; margin:2px 2px 12px}
+.dayhead h2{font-size:1.35rem; font-weight:800; letter-spacing:-.02em}
+.badge{font-size:.66rem; font-weight:800; letter-spacing:.06em; padding:4px 9px; border-radius:999px}
+.badge.gym{background:var(--gym-soft); color:var(--gym)}
+.badge.rest{background:#EEEBE4; color:var(--muted)}
+
+/* meal card */
+.meal{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); margin-bottom:12px; overflow:hidden}
+.meal-top{padding:12px 14px 8px}
+.meal-time{font-size:.66rem; font-weight:800; letter-spacing:.08em; color:var(--muted); text-transform:uppercase}
+.meal-name{font-size:.98rem; font-weight:800; letter-spacing:-.01em; margin-top:2px}
+.meal-kcal{display:flex; gap:6px; margin-top:7px}
+.kc{font-size:.7rem; font-weight:800; padding:3px 9px; border-radius:7px}
+.kc.a{background:var(--a-soft); color:var(--a)}
+.kc.n{background:var(--ana-soft); color:var(--ana)}
+.rows{border-top:1px solid var(--line)}
+.row{display:grid; grid-template-columns:1fr 74px 74px; align-items:center; padding:8px 14px; border-bottom:1px solid var(--line); font-size:.84rem}
+.row:last-child{border-bottom:none}
+.row .it{padding-right:8px}
+.row .qa{color:var(--a); font-weight:800; text-align:right; font-variant-numeric:tabular-nums}
+.row .qn{color:var(--ana); font-weight:800; text-align:right; font-variant-numeric:tabular-nums}
+.row.head{padding:6px 14px; font-size:.62rem; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); background:#FAF7F1}
+.row.head .qa,.row.head .qn{font-weight:800}
+.note{padding:9px 14px; font-size:.76rem; color:var(--muted); background:#FAF7F1; border-top:1px solid var(--line)}
+.meal.pw{border-color:var(--a)}
+.meal.pw .meal-name{color:var(--a)}
+.meal.free-meal{border-color:var(--free)}
+.meal.free-meal .meal-name{color:var(--free)}
+
+/* day total */
+.total{background:var(--ink); color:#fff; border-radius:var(--radius); padding:14px; margin:4px 0 20px}
+.total h3{font-size:.66rem; letter-spacing:.09em; text-transform:uppercase; color:#B8BDC2; font-weight:800}
+.total .tr{display:flex; justify-content:space-between; margin-top:8px; font-size:.92rem; font-weight:700}
+.total .who{display:flex; align-items:center; gap:7px}
+.total .pass{font-size:.66rem; font-weight:800; color:#8FD0A0; letter-spacing:.05em}
+
+/* shop */
+.trip{margin-bottom:22px}
+.trip>h2{font-size:1.05rem; font-weight:800; letter-spacing:-.01em; margin:4px 2px 3px}
+.trip>.tsub{font-size:.74rem; color:var(--muted); margin:0 2px 10px}
+.store{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); margin-bottom:12px; overflow:hidden}
+.store h3{padding:10px 14px; font-size:.68rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; background:#FAF7F1; border-bottom:1px solid var(--line)}
+.si{display:flex; align-items:flex-start; gap:11px; padding:10px 14px; border-bottom:1px solid var(--line); font-size:.86rem; cursor:pointer; user-select:none}
+.si:last-child{border-bottom:none}
+.si .box{flex:0 0 auto; width:20px; height:20px; border:2px solid #C9C2B6; border-radius:6px; margin-top:1px; position:relative}
+.si.done .box{background:var(--a); border-color:var(--a)}
+.si.done .box::after{content:""; position:absolute; left:5px; top:1px; width:5px; height:10px; border:solid #fff; border-width:0 2.5px 2.5px 0; transform:rotate(45deg)}
+.si.done .tx{color:var(--muted); text-decoration:line-through}
+.si .tx b{font-weight:800}
+.si .tx small{display:block; color:var(--muted); font-size:.72rem; margin-top:1px}
+.shopnote{font-size:.74rem; color:var(--muted); margin:10px 2px 0; padding-bottom:6px}
+
+/* rules */
+.rcard{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px; margin-bottom:12px}
+.rcard h3{font-size:.9rem; font-weight:800; margin-bottom:7px; letter-spacing:-.01em}
+.rcard p, .rcard li{font-size:.84rem}
+.rcard ul{padding-left:18px}
+.rcard li{margin-bottom:5px}
+.swap{display:grid; grid-template-columns:1fr 1.35fr; gap:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:8px}
+.swap div{padding:8px 10px; font-size:.78rem; border-bottom:1px solid var(--line)}
+.swap div:nth-child(odd){background:#FAF7F1; font-weight:700}
+.swap div:nth-last-child(-n+2){border-bottom:none}
+.pill{display:inline-block; font-size:.7rem; font-weight:800; padding:2px 8px; border-radius:999px; margin:2px 3px 2px 0}
+.pill.ok{background:var(--free-soft); color:var(--free)}
+
+/* tab bar */
+nav{
+  position:fixed; left:0; right:0; bottom:0; z-index:30;
+  display:flex; background:rgba(255,255,255,.96); backdrop-filter:blur(10px);
+  border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom);
+}
+nav button{
+  flex:1; background:none; border:none; padding:11px 0 9px; font-family:inherit;
+  font-size:.68rem; font-weight:800; letter-spacing:.03em; color:var(--muted); cursor:pointer;
+}
+nav button .ic{display:block; font-size:1.15rem; margin-bottom:2px}
+nav button.on{color:var(--ink)}
+@media (prefers-reduced-motion: no-preference){
+  .view.on{animation:fade .18s ease}
+  @keyframes fade{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="hTitle">Week Plan · v2</h1>
+  <div class="sub">All weights raw / dry — weigh before cooking · week of 3 Aug 2026</div>
+  <div class="legend"><span><i class="dotA"></i>Alireza</span><span><i class="dotN"></i>Ana</span></div>
+</header>
+
+<div class="days" id="dayChips"></div>
+
+<main>
+  <section class="view on" id="view-plan"><div id="dayContent"></div></section>
+
+  <section class="view" id="view-shop">
+    <div id="shopContent"></div>
+    <p class="shopnote">Tap items to check them off (resets when the app reopens — that's fine, the list is weekly). Nothing goes in the trolley that isn't on this list. Never shop hungry.</p>
+  </section>
+
+  <section class="view" id="view-rules">
+    <div class="rcard">
+      <h3>Your numbers</h3>
+      <p><b style="color:var(--a)">Alireza</b> — 2,100 kcal rest · 2,350 gym · ~175 g protein.<br>
+      <b style="color:var(--ana)">Ana</b> — 1,400 kcal flat, every day, while on sick leave (no training bonus) · ~100–110 g protein. Expect ~0.3–0.5 kg/week on the 3–4 week trend.</p>
+    </div>
+    <div class="rcard">
+      <h3>Every meal</h3>
+      <ul>
+        <li><b>Protein → vegetables → starch</b>, physically in that order on the plate.</li>
+        <li>500 ml water before every meal. 20 minutes minimum. No screens.</li>
+        <li>Big salad 20–30 min before dinner — already in the numbers.</li>
+        <li><b>Eggs: boiled only.</b> Never breakfast + lunch the same day; never dinner + next-day breakfast.</li>
+        <li>One system: everything weighed <b>raw or dry</b> before cooking. No cooked weights, no spoons.</li>
+        <li>Never skip a meal to save calories — that produces the evening binge.</li>
+        <li>Multivitamin + vitamin D in the evening. Sleep 7–8 h. Weigh daily, trust only the 7-day average.</li>
+      </ul>
+    </div>
+    <div class="rcard">
+      <h3>Fish policy</h3>
+      <p>Two seafood meals a week and no more: <b>salmon Thursday</b> (the one that stays — it's the only reliable omega-3 source) and <b>shrimp Friday</b>. Daily walnuts + chia cover part of the rest.</p>
+    </div>
+    <div class="rcard">
+      <h3>Hungry?</h3>
+      <ul>
+        <li>1 — 500 ml water, wait 10 minutes.</li>
+        <li>2 — a big bowl of free vegetables with vinegar or lemon.</li>
+        <li>3 — tea or black coffee.</li>
+        <li>4 — 250 g skyr or kwark, taken off the next meal.</li>
+      </ul>
+      <p style="margin-top:6px">
+        <span class="pill ok">leafy greens</span><span class="pill ok">cucumber</span><span class="pill ok">tomato</span><span class="pill ok">courgette</span><span class="pill ok">aubergine</span><span class="pill ok">peppers</span><span class="pill ok">mushrooms</span><span class="pill ok">cauliflower</span><span class="pill ok">broccoli</span><span class="pill ok">cabbage</span><span class="pill ok">green beans</span><span class="pill ok">spinach</span><span class="pill ok">onion</span><span class="pill ok">herbs</span><span class="pill ok">lemon</span><span class="pill ok">tea · coffee</span>
+      </p>
+    </div>
+    <div class="rcard">
+      <h3>Swaps — amounts matched, nothing to recalculate</h3>
+      <div class="swap">
+        <div>Beef 5% 160 g raw</div><div>Lean stew beef 160 · lamb lean 140 · tofu 250</div>
+        <div>Salmon 190 g</div><div>Trout 190 · mackerel 140 (keep 1 oily fish/week)</div>
+        <div>Skyr 250 g</div><div>Greek yog 0% 250 · hüttenkäse 200 · kwark 250 · 25 g whey</div>
+        <div>Rice 55 g dry</div><div>Bulgur 55 · pasta 55 · quinoa 50 · potato 250 raw · bread 80</div>
+        <div>Volkoren 35 g</div><div>Rye 45 · sangak 1 palm · 2 crispbreads · 25 g oats</div>
+        <div>Olive oil 1 tbsp</div><div>Rapeseed · sesame · 25 g avocado · 12 g walnuts</div>
+        <div>1 fruit</div><div>1 apple = 1 orange = 1 pear = 1 small banana = 2 kiwi = 150 g berries = 2 dates</div>
+        <div>Any vegetable</div><div>Anything free-list, gram for gram · frozen = fresh</div>
+      </div>
+      <p style="margin-top:8px; font-size:.78rem; color:var(--muted)">All nuts allowed, pistachio included (caution lifted 2 Aug). Never butter, ghee, palm or coconut oil.</p>
+    </div>
+    <div class="rcard">
+      <h3>Training status</h3>
+      <p><b style="color:var(--a)">Alireza</b> — full-body Mon / Wed / Fri + cardio finisher, steps on rest days. Post-gym shake on gym days only.<br>
+      <b style="color:var(--ana)">Ana</b> — paused on sick leave. No sessions, no step targets; movement only as health comfortably allows. Restart target: end of August.</p>
+    </div>
+    <div class="rcard">
+      <h3>Weigh-in</h3>
+      <p>Sunday morning, before breakfast, same scale, both of you. Send the two numbers to Claude — the progress log lives there.</p>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button class="on" data-v="plan"><span class="ic">🍽</span>Plan</button>
+  <button data-v="shop"><span class="ic">🛒</span>Shop</button>
+  <button data-v="rules"><span class="ic">📋</span>Rules</button>
+</nav>
+
+<script>
+const R=(it,a,n)=>({it,a,n});
+const DAYS=[
+{name:"Monday",gym:true,meals:[
+ {t:"Breakfast · 07:30",n:"Skyr & oat bowl",ka:500,kn:295,rows:[R("Skyr 0%","250 g","175 g"),R("Oats","45 g","25 g"),R("Frozen berries","120 g","80 g"),R("Walnuts","12 g","5 g"),R("Chia","10 g","5 g")]},
+ {t:"Lunch · 12:30",n:"Ghormeh sabzi (lean) + brown rice",ka:655,kn:420,rows:[R("Lean beef stew cubes, raw","160 g","100 g"),R("Sabzi ghormeh (herbs)","120 g","100 g"),R("Kidney beans, canned rinsed","120 g","80 g"),R("Brown rice, dry","55 g","30 g"),R("Onion","50 g","40 g"),R("Olive oil","7 g","5 g"),R("Dried limes, turmeric","free","free")],note:"Skim any fat before serving. Cook the base Sunday — it's better overnight."},
+ {t:"Snack · 16:00",n:"Cottage cheese, crispbread & apple",ka:350,kn:255,rows:[R("Hüttenkäse","200 g","150 g"),R("Knäckebröd","20 g","10 g"),R("Apple","150 g","130 g")]},
+ {t:"Dinner · 19:30",n:"Ash-e jo soup + kwark",ka:630,kn:450,rows:[R("Barley (gort), dry","40 g","25 g"),R("Lentils, dry","40 g","30 g"),R("White beans, canned rinsed","100 g","60 g"),R("Fresh herbs","100 g","80 g"),R("Onion","50 g","40 g"),R("Olive oil","5 g","5 g"),R("Side salad","150 g","150 g"),R("Kwark (dessert)","200 g","125 g")]},
+ {t:"Post-gym · Alireza only",n:"Whey + banana",pw:true,ka:227,kn:0,rows:[R("Whey protein","30 g","—"),R("Banana","120 g","—")]}
+],ta:"2,360 kcal · 184 g P",tn:"1,410 kcal · 107 g P"},
+
+{name:"Tuesday",gym:false,meals:[
+ {t:"Breakfast · 07:30",n:"Overnight oats, whey & berries",ka:470,kn:320,rows:[R("Oats","55 g","35 g"),R("Whey","25 g","20 g"),R("Halfvolle melk","150 ml","100 ml"),R("Frozen berries","120 g","100 g"),R("Chia","10 g","5 g")]},
+ {t:"Lunch · 12:30",n:"Wholemeal pasta bolognese",ka:695,kn:445,rows:[R("Wholemeal pasta, dry","70 g","45 g"),R("Beef mince 5%, raw","180 g","100 g"),R("Passata","200 g","150 g"),R("Mushrooms","100 g","80 g"),R("Courgette","100 g","—"),R("Onion","40 g","40 g"),R("Olive oil","6 g","4 g"),R("Side salad","150 g","150 g")]},
+ {t:"Snack · 16:00",n:"Skyr, banana & almonds",ka:320,kn:230,rows:[R("Skyr 0%","250 g","175 g"),R("Banana","100 g","80 g"),R("Almonds","12 g","8 g")]},
+ {t:"Dinner · 19:30",n:"Olivieh-style egg & potato salad",ka:610,kn:390,rows:[R("Boiled eggs","3","2"),R("Potato, raw","160 g","140 g"),R("Skyr dressing (mustard + lemon)","100 g","75 g"),R("Cucumber & veg","100 g","100 g"),R("Kwark (dessert)","150 g","100 g"),R("Volkoren bread","35 g","—")],note:"No mayo — skyr, mustard and lemon do the job. Eggs tonight → egg-free breakfast tomorrow."}
+],ta:"2,095 kcal · 173 g P",tn:"1,385 kcal · 110 g P"},
+
+{name:"Wednesday",gym:true,meals:[
+ {t:"Breakfast · 07:30",n:"Cottage cheese, volkoren & apple",ka:545,kn:355,rows:[R("Hüttenkäse","200 g","150 g"),R("Volkoren bread","70 g","35 g"),R("Tomato","120 g","100 g"),R("Walnuts","12 g","6 g"),R("Apple","150 g","130 g")]},
+ {t:"Lunch · 12:30",n:"Oven beef kofte, bulgur & shirazi",ka:625,kn:385,rows:[R("Beef mince 5%, raw","180 g","110 g"),R("Bulgur, dry","65 g","30 g"),R("Tomato","150 g","120 g"),R("Onion","50 g","50 g"),R("Salad veg","200 g","200 g"),R("Olive oil","7 g","5 g")]},
+ {t:"Snack · 16:00",n:"Kwark, berries & walnuts",ka:280,kn:165,rows:[R("Kwark 0%","250 g","150 g"),R("Frozen berries","130 g","100 g"),R("Walnuts","12 g","5 g")]},
+ {t:"Dinner · 19:30",n:"Protein-wrap pizza + big salad",ka:675,kn:495,rows:[R("Protein wraps (195 kcal each)","2","1.5"),R("Passata, spread thin","120 g","100 g"),R("Mozzarella light","90 g","50 g"),R("Mushrooms","100 g","80 g"),R("Paprika","100 g","80 g"),R("Side salad","200 g","200 g")],note:"Freeze the unused 2.5 wraps tonight — open pack keeps only 2 days chilled."},
+ {t:"Post-gym · Alireza only",n:"Whey + banana",pw:true,ka:227,kn:0,rows:[R("Whey protein","30 g","—"),R("Banana","120 g","—")]}
+],ta:"2,350 kcal · 190 g P",tn:"1,400 kcal · 107 g P"},
+
+{name:"Thursday",gym:false,meals:[
+ {t:"Breakfast · 07:30",n:"Persian boiled-egg breakfast",ka:520,kn:325,rows:[R("Boiled eggs","2","2"),R("Feta","40 g","25 g"),R("Volkoren bread","70 g","35 g"),R("Tomato","120 g","100 g"),R("Walnuts","10 g","—")]},
+ {t:"Lunch · 12:30",n:"Adasi (lentil stew) + kwark",ka:465,kn:295,rows:[R("Lentils, dry","80 g","50 g"),R("Onion","50 g","40 g"),R("Olive oil","6 g","4 g"),R("Kwark (side)","200 g","125 g"),R("Cumin, golpar","free","free")],note:"Eggs were at breakfast → none at lunch."},
+ {t:"Snack · 16:00",n:"Skyr, peanut butter & apple",ka:360,kn:240,rows:[R("Skyr 0%","300 g","175 g"),R("Peanut butter 100%","15 g","10 g"),R("Apple","150 g","130 g")]},
+ {t:"Dinner · 19:30",n:"Oven salmon, potato & green beans",ka:780,kn:520,rows:[R("Salmon fillet, raw","190 g","110 g"),R("Potato, raw","200 g","140 g"),R("Green beans","250 g","200 g"),R("Side salad","150 g","150 g"),R("Olive oil","5 g","4 g"),R("Kwark (dessert)","150 g","100 g")],note:"Fish meal 1 of 2 — the one that stays, for omega-3."}
+],ta:"2,125 kcal · 174 g P",tn:"1,380 kcal · 110 g P"},
+
+{name:"Friday",gym:true,meals:[
+ {t:"Breakfast · 07:30",n:"Skyr bowl, kiwi & walnuts",ka:545,kn:330,rows:[R("Skyr 0%","250 g","175 g"),R("Oats","45 g","25 g"),R("Kiwi","150 g","120 g"),R("Walnuts","12 g","8 g"),R("Chia","10 g","—")]},
+ {t:"Lunch · 12:30",n:"Shrimp & chickpea bowl",ka:545,kn:350,rows:[R("Shrimp, raw peeled","200 g","130 g"),R("Chickpeas, dry","60 g","40 g"),R("Spinach","150 g","120 g"),R("Tomato","150 g","120 g"),R("Olive oil","8 g","5 g"),R("Lemon","free","free")],note:"Seafood meal 2 of 2."},
+ {t:"Snack · 16:00",n:"Boiled eggs, veg sticks & orange",ka:300,kn:280,rows:[R("Boiled eggs","2","2"),R("Veg sticks","150 g","150 g"),R("Orange","150 g","130 g"),R("Knäckebröd","10 g","8 g")]},
+ {t:"Dinner · 19:30",n:"Gheymeh (lean) + brown rice",ka:735,kn:450,rows:[R("Lean beef stew cubes, raw","120 g","80 g"),R("Yellow split peas, dry","50 g","35 g"),R("Brown rice, dry","55 g","30 g"),R("Potato wedges, oven, raw","80 g","—"),R("Tomato paste","20 g","15 g"),R("Onion","50 g","40 g"),R("Dried lime, turmeric, cinnamon","free","free"),R("Olive oil","7 g","5 g"),R("Side salad","150 g","150 g")],note:"Oven wedges on top, never fried."},
+ {t:"Post-gym · Alireza only",n:"Whey + banana",pw:true,ka:227,kn:0,rows:[R("Whey protein","30 g","—"),R("Banana","120 g","—")]}
+],ta:"2,350 kcal · 184 g P",tn:"1,410 kcal · 108 g P"},
+
+{name:"Saturday",gym:false,meals:[
+ {t:"Breakfast · 07:30",n:"Cottage cheese, rye & avocado",ka:450,kn:300,rows:[R("Hüttenkäse","200 g","150 g"),R("Roggebrood","90 g","45 g"),R("Avocado","40 g","30 g"),R("Tomato","100 g","100 g")]},
+ {t:"Lunch · 12:30 — FREE MEAL",n:"Anything you like",fm:true,ka:700,kn:450,rows:[R("One portion, eaten out, not delivered","~700 kcal","~450 kcal")],note:"Not a free day. Pick something with meat — protein runs low today otherwise."},
+ {t:"Snack · 16:00",n:"Apple & almonds",ka:200,kn:140,rows:[R("Apple","150 g","130 g"),R("Almonds","20 g","12 g")]},
+ {t:"Dinner · 19:30",n:"Khorak-e loobia chiti + boiled eggs",ka:590,kn:435,rows:[R("Pinto beans, canned rinsed","180 g","130 g"),R("Passata","150 g","120 g"),R("Onion","50 g","40 g"),R("Boiled eggs (side)","2","1"),R("Volkoren bread","35 g","35 g"),R("Olive oil","7 g","5 g"),R("Side salad","200 g","200 g")]},
+ {t:"Evening",n:"Kwark",ka:150,kn:90,rows:[R("Magere kwark","250 g","150 g")],note:"Eggs tonight → egg-free breakfast tomorrow."}
+],ta:"~2,090 kcal · ~125 g P (incl. free meal)",tn:"~1,410 kcal · ~85 g P"},
+
+{name:"Sunday",gym:false,meals:[
+ {t:"Breakfast · 07:30",n:"Overnight oats, whey & berries",ka:490,kn:320,rows:[R("Oats","55 g","35 g"),R("Whey","30 g","20 g"),R("Halfvolle melk","150 ml","100 ml"),R("Frozen berries","120 g","100 g"),R("Chia","10 g","5 g")]},
+ {t:"Lunch · 12:30",n:"Baked marinated tofu & veg rice bowl",ka:610,kn:380,rows:[R("Firm tofu, marinated, raw","250 g","140 g"),R("Brown rice, dry","45 g","25 g"),R("Broccoli","200 g","180 g"),R("Paprika","100 g","80 g"),R("Olive oil","5 g","4 g")],note:"One trial. Not for you? Swap to 160 g / 100 g beef 5% — same numbers — and it stays swapped."},
+ {t:"Snack · 16:00",n:"Cottage cheese, orange & crispbread",ka:325,kn:245,rows:[R("Hüttenkäse","200 g","150 g"),R("Orange","150 g","130 g"),R("Knäckebröd","15 g","10 g")]},
+ {t:"Dinner · 19:30",n:"Aubergine–mozzarella bake",ka:650,kn:475,rows:[R("Aubergine, roasted (never fried)","300 g","250 g"),R("Passata","200 g","150 g"),R("Mozzarella light","125 g","80 g"),R("Volkoren bread","35 g","35 g"),R("Side salad","200 g","200 g"),R("Olive oil","8 g","4 g"),R("Kwark (dessert)","200 g","100 g")],note:"Weigh-in tomorrow morning — before breakfast, same scale, both of you."}
+],ta:"2,095 kcal · 166 g P",tn:"1,420 kcal · 108 g P"}
+];
+
+const SHOP=[
+{trip:"Trip 1 — Sunday",sub:"Covers Mon – Wed",stores:[
+ {s:"Lidl · fridge & meat",items:[
+  ["Milbona Skyr 0% naturel","2 × 500 g"],["Milbona Magere kwark 0%","2 × 500 g"],["Halfvolle melk","1 L — Tue + Sun breakfasts"],["Feta","1 small block — used Thursday"],["Rundergehakt mager 5%","2 × 300 g — not standard gehakt"]]},
+ {s:"Lidl · vegetables & fruit",items:[
+  ["Iceberg + romaine","1 of each"],["Komkommer","3"],["Paprika","4 — 2 are for pizza"],["Tomaten","900 g — store outside fridge"],["Champignons","2 × 250 g — pasta + pizza"],["Courgette","1"],["Uien","6"],["Aardappelen","500 g — cupboard"],["Bananen","5"],["Appels (bio)","3"],["Citroenen","2"],["Diepvries bosvruchten","1 × 500 g — decant to zip bag"]]},
+ {s:"Lidl · cupboard (buy once, then skip)",items:[
+  ["Havermout","1 kg — ~3 weeks"],["Zilvervliesrijst","500 g"],["Linzen","500 g"],["Gele spliterwten","500 g — gheymeh, NEW"],["Gort (barley)","500 g — ash-e jo, NEW"],["Volkoren pasta","500 g"],["Passata","2 × 500 g"],["Tomatenpuree","1 small tin"],["Kidneybonen","1 tin"],["Witte bonen","1 tin"],["Knäckebröd","1 pack"],["Volkorenbrood","1 small loaf"]]},
+ {s:"then Albert Heijn",items:[
+  ["AH Hüttenkäse naturel","2 × 200 g"],["AH Runderpoulet mager","260 g — Mon ghormeh"],["Eggs bio","18 — counter, not fridge"],["Mozzarella light","1 pack ~125 g — Wed pizza"],["Body&Fit Protein Wraps","6-pack — AH stocks them"]]}
+]},
+{trip:"Trip 2 — Thursday",sub:"Covers Thu – Sun",stores:[
+ {s:"Lidl",items:[
+  ["Milbona Skyr 0%","2 × 500 g"],["Milbona Magere kwark 0%","3 × 500 g"],["Iceberg + romaine","1 of each"],["Komkommer","3"],["Paprika","2"],["Tomaten","800 g"],["Sperziebonen","500 g — Thursday"],["Broccoli","1 head — Sunday"],["Aubergine","2 — Sunday bake"],["Uien","3"],["Aardappelen","500 g"],["Appels (bio)","3"],["Sinaasappels","3"],["Kiwi","3"],["Bananen","2"],["Citroenen","1"],["Bruine/pinto bonen (chiti)","2 tins — Sat khorak"],["Passata","1 × 500 g"],["Volkorenbrood","1 small loaf"],["Pindakaas 100%","if low"]]},
+ {s:"then Albert Heijn",items:[
+  ["AH Hüttenkäse","500 g + 200 g"],["Zalmfilet (ASC)","300 g fresh — Thursday dinner"],["Garnalen","1 small frozen pack ~350 g — Friday"],["AH Runderpoulet mager","200 g — Fri gheymeh"],["Tofu naturel/firm","2 × 200 g — Sunday trial"],["Mozzarella light","1 pack ~125 g — Sunday bake"],["Roggebrood","1 small pack"],["Avocado","1"]]}
+]},
+{trip:"Turkish shop / Woenselse Markt — Saturday",sub:"Every 3 – 4 weeks",stores:[
+ {s:"Kruisstraat · Öztürk · Yasar · markt",items:[
+  ["Fresh sabzi","big bunches — ghormeh + ash + adasi need a lot this week"],["Frozen sabzi ghormeh","1–2 packs — the Monday shortcut"],["Limoo amani (dried limes)","ghormeh AND gheymeh"],["Split peas / barley / lentils","1 kg bags — ~¼ supermarket price"],["Turmeric, cinnamon, advieh, cumin, golpar","bulk"],["Sangak","bread swap row"]]}
+]}];
+
+// render day chips + content
+const chipBox=document.getElementById('dayChips'), dayBox=document.getElementById('dayContent');
+const todayIdx=(new Date().getDay()+6)%7; // Mon=0
+let current=todayIdx;
+function chips(){
+  chipBox.innerHTML=DAYS.map((d,i)=>`<button class="day-chip${i===current?' active':''}${i===todayIdx?' today':''}" onclick="pick(${i})">${d.name.slice(0,3)}<span class="${d.gym?'g':'r'}">${d.gym?'GYM':'rest'}</span></button>`).join('');
+}
+function pick(i){current=i;chips();renderDay();document.querySelector('main').scrollIntoView();}
+function renderDay(){
+  const d=DAYS[current];
+  let h=`<div class="dayhead"><h2>${d.name}${current===todayIdx?' · today':''}</h2><span class="badge ${d.gym?'gym':'rest'}">${d.gym?'GYM DAY — Alireza':'REST DAY'}</span></div>`;
+  d.meals.forEach(m=>{
+    h+=`<div class="meal${m.pw?' pw':''}${m.fm?' free-meal':''}">
+      <div class="meal-top"><div class="meal-time">${m.t}</div><div class="meal-name">${m.n}</div>
+      <div class="meal-kcal"><span class="kc a">A ${m.ka} kcal</span>${m.kn?`<span class="kc n">Ana ${m.kn} kcal</span>`:''}</div></div>
+      <div class="rows"><div class="row head"><span class="it">Item</span><span class="qa">Alireza</span><span class="qn">Ana</span></div>`;
+    m.rows.forEach(r=>{h+=`<div class="row"><span class="it">${r.it}</span><span class="qa">${r.a}</span><span class="qn">${r.n}</span></div>`;});
+    h+=`</div>${m.note?`<div class="note">${m.note}</div>`:''}</div>`;
+  });
+  h+=`<div class="total"><h3>Day total — checked against targets</h3>
+      <div class="tr"><span class="who"><i class="dotA"></i>Alireza</span><span>${d.ta} <span class="pass">PASS</span></span></div>
+      <div class="tr"><span class="who"><i class="dotN"></i>Ana</span><span>${d.tn} <span class="pass">PASS</span></span></div></div>`;
+  dayBox.innerHTML=h;
+}
+// shop
+const shopBox=document.getElementById('shopContent');
+shopBox.innerHTML=SHOP.map(t=>`<div class="trip"><h2>${t.trip}</h2><p class="tsub">${t.sub}</p>${
+  t.stores.map(st=>`<div class="store"><h3>${st.s}</h3>${
+    st.items.map(it=>`<div class="si" onclick="this.classList.toggle('done')"><span class="box"></span><span class="tx"><b>${it[0]}</b><small>${it[1]}</small></span></div>`).join('')
+  }</div>`).join('')}</div>`).join('');
+// tabs
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='view-'+b.dataset.v));
+  chipBox.style.display=b.dataset.v==='plan'?'flex':'none';
+  window.scrollTo(0,0);
+});
+chips();renderDay();
+</script>
+</body>
+</html>
