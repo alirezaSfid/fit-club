@@ -1,0 +1,18 @@
+## December menu (reserve)
+
+Kabab koobideh, khoresht gheymeh, homemade burger, spaghetti bolognese. They swap in at the next monthly refresh, protein-matched, inside the same red-meat budget.
+
+## Flags
+
+- **Estimated values (not read off a label):** lamsbout mager (160/20), runderpoulet mager (130/21), Iranian/Turkish bread (260/8.5), dried barberries (300/4), ghormeh herb mix (30/2.5). Each appears in one or two meals a week; the worst case is about ±15 kcal/day.
+- **Saturday protein** is below the daily floor by design (social dinner). The weekly averages are above target for both.
+- **Red meat** is over the new Dutch guideline for Alireza (WCRF-compliant). If his blood lipids or a doctor say otherwise, Ana's portion size becomes his too.
+- **Persian pantry:** dried fenugreek, limoo amani, barberries, saffron and sangak or barbari bread (to freeze). One trip a month to an Iranian/Turkish shop; there is no supermarket alternative.
+
+## Verification
+
+`fitclub/calc.py` recomputes every meal from `data/foods.py`; `pytest` blocks the build if any check fails. Checks run on this version: every day inside 2,130–2,250 / 1,370–1,480. Weekly averages {{ A.kcal }} / {{ N.kcal }} (target ± 15). Protein ≥ 165 / ≥ 100 every day except Saturday. Fibre weekly averages ≥ 30 / ≥ 25. At most one legume meal per day, five per week. Red meat {{ A.red }} / {{ N.red }} g raw per week.
+
+## Sources
+
+Schoenfeld, Aragon & Krieger 2013, JISSN (protein timing). Westenhoefer, Stunkard & Pudel 1999, Int J Eat Disord (rigid vs flexible restraint). WCRF Cancer Prevention Recommendations (red meat 350–500 g cooked per week). Gezondheidsraad, Richtlijnen goede voeding 2025 (red meat ≤ 200 g, legumes ~250 g, nuts 15–30 g, fish ~100 g per week). Verheggen 2016, Obes Rev (exercise and visceral fat). Voedingscentrum / Gezondheidsraad vitamin D advice. Full list: review-2026-11-audit-and-evidence.md.

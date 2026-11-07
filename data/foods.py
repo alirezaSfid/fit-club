@@ -1,0 +1,23 @@
+# kcal, protein g, fibre g per 100 g (raw/dry/drained as stated). src: L=label, N=NEVO-typical, E=estimate
+F = {
+ "Skyr 0%":(63,11,0,"L Milbona (v3.5 table)"), "Magere kwark":(52,9,0,"L Milbona (v3.5)"),
+ "Hüttenkäse":(104,12,0,"L (v3.5)"), "Halfvolle melk":(46,3.5,0,"N"), "Whey (ON Gold Standard)":(374,76,0,"L ON NL label"),
+ "Feta":(265,16.5,0,"N"), "Parmezaan":(400,35,0,"N"), "Mozzarella light":(167,21,0,"L AH 25+"), "Roomboter":(740,0.7,0,"N"),
+ "Ei":(143,12.6,0,"N; 1 egg = 55 g"),
+ "Havermout":(370,13,10,"N"), "Bosvruchten (diepvries)":(45,1,4,"N"), "Walnoten":(690,15,6,"N"), "Chiazaad":(490,17,34,"N"),
+ "Pindakaas 100%":(610,25,8,"N"), "Tahin":(620,18,9,"N"), "Pistache":(570,20,10,"N"),
+ "Kipfilet":(105,23.5,0,"L Lidl"), "Kipdijfilet":(155,19,0,"L AH"), "Lamsbout mager":(160,20,0,"E (v3.5)"),
+ "Runderpoulet mager":(130,21,0,"E (v3.5)"), "Kogelbiefstuk":(110,23,0,"L AH"), "Zalmfilet ASC":(200,20,0,"N"),
+ "Zilvervliesrijst (dry)":(350,7.5,3.5,"N"), "Quinoa (dry)":(368,14,7,"N"), "Volkoren pasta (dry)":(350,13.5,8,"N"),
+ "Zelfrijzend bakmeel":(345,10,3,"N"), "Iraans/Turks brood":(260,8.5,3,"E"), "Aardappel":(80,2,1.4,"N"),
+ "Rode linzen (dry)":(340,24,11,"N"), "Linzen (tin, drained)":(89,7.1,4.5,"L AH Terra (v3.5)"),
+ "Witte bonen (tin, drained)":(85,6.5,5,"N"), "Kidneybonen (tin, drained)":(95,7,6,"N"),
+ "Kikkererwten (tin, drained)":(120,7.5,6,"N"), "Gort (dry)":(350,10,15,"N"), "Maizena":(350,0.3,1,"N"),
+ "Passata":(30,1.4,1.2,"N"), "Tomatenpuree":(80,4,4,"N"), "Berberis (zereshk)":(300,4,7,"E"),
+ "Honing":(304,0.3,0,"N"), "Pure chocolade 70%+":(580,8,11,"N"), "Dadels":(280,2.5,8,"N"),
+ "Popcornmais":(356,9.5,14.4,"L Valle del Sole (AH)"), "Olijfolie":(884,0,0,"N"),
+ "Tomaat":(18,0.9,1.2,"N"), "Komkommer":(12,0.7,0.5,"N"), "Sla":(15,1.2,1.3,"N"), "Ui":(40,1.2,1.7,"N"),
+ "Paprika":(30,1,2,"N"), "Champignons":(22,3,1,"N"), "Broccoli":(34,2.8,2.6,"N"), "Spinazie":(23,2.9,2.2,"N"), "Spinazie (diepvries)":(23,2.9,2.2,"N"),
+ "Verse kruiden":(35,2.8,3.3,"N"), "Wortel":(41,0.9,2.8,"N"), "Sabzi (ghormeh-kruiden)":(30,2.5,3,"E"),
+ "Appel":(52,0.3,2.4,"N"), "Sinaasappel":(47,0.9,2.2,"N"), "Granaatappelpitjes":(83,1.7,4,"N"),
+}
