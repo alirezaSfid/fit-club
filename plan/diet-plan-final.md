@@ -36,7 +36,7 @@ Removed: post-workout whey + banana, the gym toggle, Saturday free lunch, kwark,
 | | Time | Note |
 |---|---|---|
 | Breakfast | 07:30 (weekends 08:30–09:00) | Office day: pack the jar |
-| Lunch | 12:30 | All weekday lunches pack and reheat |
+| Lunch | 12:30 (Sunday 13:00) | All weekday lunches pack and reheat |
 | Tea | 16:30 | With tea. On gym days this is the pre-workout snack |
 | Dinner | 19:30 | After the gym on training days, so it doubles as the post-workout meal |
 | TV snack | 21:30 | Ana: the last food of the day; herbal tea after |

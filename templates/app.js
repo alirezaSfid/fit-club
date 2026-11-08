@@ -31,9 +31,10 @@ const D = DATA.days;
 const todayIdx = (NOW.getDay()+1)%7;   // Saturday = 0 … Friday = 6
 let current = todayIdx;
 const chipBox=document.getElementById('dayChips'), dayBox=document.getElementById('dayContent');
+const MAIN=document.querySelector('main');
 function chips(){
   chipBox.innerHTML=D.map((d,i)=>`<button class="day-chip${i===current?' active':''}${i===todayIdx?' today':''}" data-i="${i}">${d.name.slice(0,3)}<span class="r">${d.name==='Saturday'?'social':d.name==='Sunday'?'cook-up':'&nbsp;'}</span></button>`).join('');
-  chipBox.querySelectorAll('.day-chip').forEach(b=>b.onclick=()=>{current=+b.dataset.i;chips();renderDay();window.scrollTo(0,0);});
+  chipBox.querySelectorAll('.day-chip').forEach(b=>b.onclick=()=>{current=+b.dataset.i;chips();renderDay();MAIN.scrollTop=0;});
 }
 const LABEL={p:'✓ As planned',s:'↔ Swapped',x:'+ Extra'};
 function chkRow(mid,who,name){
@@ -62,10 +63,12 @@ function renderDay(){
      `<div class="tr"><span class="who"><i class="dotA"></i>Alireza</span><span>${fmt(d.a[0])} kcal · ${d.a[1]} g P<small>${d.a[2]} g fibre</small> ${pass(d.a[3])}</span></div>`+
      `<div class="tr"><span class="who"><i class="dotN"></i>Ana</span><span>${fmt(d.n[0])} kcal · ${d.n[1]} g P<small>${d.n[2]} g fibre</small> ${pass(d.n[3])}</span></div></div>`;
   dayBox.innerHTML=h;
+  /* update only the tapped row: no redraw, so open recipes stay open and the page never jumps */
   dayBox.querySelectorAll('.chk button').forEach(b=>b.onclick=()=>{
     const k=b.dataset.m+'|'+b.dataset.w;
     if(S.log[k]===b.dataset.k) delete S.log[k]; else S.log[k]=b.dataset.k;
-    persist(); renderDay(); adherence();
+    b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',S.log[k]===x.dataset.k));
+    persist(); adherence();
   });
 }
 
@@ -75,7 +78,7 @@ function renderPrep(){
   const box=document.getElementById('prepContent');
   box.innerHTML=`<div class="store"><h3>Sunday cook-up &amp; weekly prep</h3>`+DATA.prep.map(p=>
     `<div class="si${S.prep[p.id]?' done':''}" data-id="${p.id}"><span class="box"></span><span class="tx"><span class="prep-when">${esc(p.when)}</span>${esc(p.text)}</span></div>`).join('')+`</div>`;
-  box.querySelectorAll('.si').forEach(el=>el.onclick=()=>{const id=el.dataset.id; S.prep[id]=!S.prep[id]; if(!S.prep[id]) delete S.prep[id]; persist(); renderPrep();});
+  box.querySelectorAll('.si').forEach(el=>el.onclick=()=>{const id=el.dataset.id; if(S.prep[id]) delete S.prep[id]; else S.prep[id]=true; el.classList.toggle('done',!!S.prep[id]); persist();});
 }
 
 /* ---- shop ---- */
@@ -88,7 +91,7 @@ function item(id,title,sub,st){
 }
 function renderShop(){
   document.getElementById('tripSel').innerHTML=TRIPS.map(t=>`<button class="${t===trip?'on':''}" data-t="${t}">${t}<small>${t==='Saturday'?'Sat–Tue lunch':t==='Tuesday'?'Tue dinner–Fri':t==='Pantry'?'when it runs out':'once a month'}</small></button>`).join('');
-  document.querySelectorAll('#tripSel button').forEach(b=>b.onclick=()=>{trip=b.dataset.t;renderShop();});
+  document.querySelectorAll('#tripSel button').forEach(b=>b.onclick=()=>{trip=b.dataset.t;renderShop();MAIN.scrollTop=0;});
   document.getElementById('firstWeek').innerHTML=(trip==='Tuesday'&&ymd(NOW)<DATA.firstWeekUntil)?`<div class="fw"><h3>First week only — Tuesday 10 Nov</h3>${DATA.firstWeek}</div>`:'';
   let h='';
   if(trip==='Saturday'||trip==='Tuesday'){
@@ -105,23 +108,23 @@ function renderShop(){
       `<small>${esc(p.use)}</small><span class="buy">${esc(p.buy)}</span>`,'')).join('')+`</div>`;
   }
   const box=document.getElementById('shopContent'); box.innerHTML=h;
-  box.querySelectorAll('.si[data-id]').forEach(el=>el.onclick=()=>{const id=el.dataset.id; if(S.shop[id]) delete S.shop[id]; else S.shop[id]=true; persist(); renderShop();});
+  box.querySelectorAll('.si[data-id]').forEach(el=>el.onclick=()=>{const id=el.dataset.id; if(S.shop[id]) delete S.shop[id]; else S.shop[id]=true; el.classList.toggle('done',!!S.shop[id]); persist();});
 }
 
 /* ---- static tabs ---- */
 document.getElementById('trainContent').innerHTML=DATA.train;
 document.getElementById('rulesContent').innerHTML=DATA.rules;
 
-/* ---- nav ---- */
+/* ---- nav: each tab keeps its own scroll position ---- */
+let view='plan'; const POS={};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  if(b.dataset.v===view){ MAIN.scrollTop=0; return; }   // tapping the open tab again jumps to the top
+  POS[view]=MAIN.scrollTop; view=b.dataset.v;
   document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='view-'+b.dataset.v));
-  document.getElementById('dayChips').style.display=b.dataset.v==='plan'?'':'none';
-  window.scrollTo(0,0);
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='view-'+view));
+  chipBox.style.display=view==='plan'?'':'none';
+  MAIN.scrollTop=POS[view]||0;
 });
+document.addEventListener('touchstart',()=>{},{passive:true});   // lets iOS show the pressed state
 
-/* keep the day chips just below the header, whatever its height */
-function fixTop(){chipBox.style.top=document.querySelector('header').offsetHeight+'px';}
-window.addEventListener('resize',fixTop);
-
-chips(); renderDay(); renderPrep(); renderShop(); adherence(); persist(); fixTop();
+chips(); renderDay(); renderPrep(); renderShop(); adherence(); persist();

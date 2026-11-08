@@ -6,11 +6,14 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:16px}
+html,body{height:100%; overflow:hidden; overscroll-behavior:none}
+/* App shell: the page itself never scrolls (so Safari's toolbar never resizes it);
+   only <main> scrolls, between the header and the bottom bar. Nothing ever sits behind the bar. */
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
   background:var(--bg); color:var(--ink); line-height:1.45;
-  padding-bottom:calc(74px + env(safe-area-inset-bottom));}
-header{padding:calc(14px + env(safe-area-inset-top)) 16px 10px; background:var(--bg);
-  position:sticky; top:0; z-index:20; border-bottom:1px solid var(--line);}
+  position:fixed; inset:0; display:flex; flex-direction:column;}
+header{flex:none; padding:calc(14px + env(safe-area-inset-top)) 16px 10px; background:var(--bg);
+  border-bottom:1px solid var(--line);}
 header h1{font-size:1.05rem; font-weight:800; letter-spacing:-.01em}
 header .sub{font-size:.72rem; color:var(--muted); margin-top:2px}
 .legend{display:flex; gap:10px; margin-top:8px; font-size:.7rem; font-weight:700}
@@ -18,8 +21,7 @@ header .sub{font-size:.72rem; color:var(--muted); margin-top:2px}
 .dotA,.dotN{width:9px;height:9px;border-radius:50%}
 .dotA{background:var(--a)} .dotN{background:var(--ana)}
 .days{display:flex; gap:6px; overflow-x:auto; padding:10px 16px 12px; scrollbar-width:none;
-  background:var(--bg); position:sticky; top:calc(58px + env(safe-area-inset-top)); z-index:19;
-  border-bottom:1px solid var(--line)}
+  background:var(--bg); flex:none; border-bottom:1px solid var(--line)}
 .days::-webkit-scrollbar{display:none}
 .day-chip{flex:0 0 auto; border:1px solid var(--line); background:var(--card); border-radius:999px;
   padding:7px 13px; font-size:.8rem; font-weight:700; color:var(--ink); font-family:inherit; cursor:pointer}
@@ -28,8 +30,9 @@ header .sub{font-size:.72rem; color:var(--muted); margin-top:2px}
 .day-chip.active{background:var(--ink); color:#fff; border-color:var(--ink)}
 .day-chip.active .g{color:#F2B25C} .day-chip.active .r{color:#B8BDC2}
 .day-chip.today:not(.active){border-color:var(--ink)}
-main{padding:14px 16px 8px; max-width:520px; margin:0 auto}
-.view{display:none} .view.on{display:block}
+main{flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch; padding:14px 16px 28px}
+.view{display:none; max-width:520px; margin:0 auto} .view.on{display:block}
 .dayhead{display:flex; align-items:baseline; justify-content:space-between; margin:2px 2px 12px}
 .dayhead h2{font-size:1.35rem; font-weight:800; letter-spacing:-.02em}
 .badge{font-size:.66rem; font-weight:800; letter-spacing:.06em; padding:4px 9px; border-radius:999px}
@@ -118,10 +121,9 @@ main{padding:14px 16px 8px; max-width:520px; margin:0 auto}
   border-radius:var(--radius); padding:11px 12px}
 .bigk .v{font-size:1.4rem; font-weight:800; letter-spacing:-.02em}
 .bigk .l{font-size:.64rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:800; margin-top:2px}
-nav{position:fixed; left:0; right:0; bottom:0; z-index:30; display:flex;
-  background:rgba(255,255,255,.96); backdrop-filter:blur(10px);
+nav{flex:none; display:flex; background:#fff;
   border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom);}
-nav button{flex:1; background:none; border:none; padding:11px 0 9px; font-family:inherit;
+nav button{flex:1; background:none; border:none; padding:11px 0 9px; min-height:56px; font-family:inherit;
   font-size:.64rem; font-weight:800; letter-spacing:.02em; color:var(--muted); cursor:pointer;}
 nav button .ic{display:block; font-size:1.12rem; margin-bottom:2px}
 nav button.on{color:var(--ink)}
